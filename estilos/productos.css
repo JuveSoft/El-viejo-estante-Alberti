@@ -1,6 +1,6 @@
 .hoja {
   margin-top: 20px;
-  gap: 20px;
+  gap: 10px; 
   display: grid;
   grid-template-columns: repeat(2, 1fr);
 }
@@ -21,7 +21,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 15px;
+  padding: 0 10px;
 }
 
 .oculta {
@@ -40,13 +40,72 @@
   margin-bottom: 0px;  
 }
 
+.card .imagen {
+  cursor: zoom-in;
+}
+
+.card .imagen:focus-visible {
+  outline: 3px solid #0057d8;
+  outline-offset: -3px;
+}
+
+html.visor-abierto {
+  overflow: hidden;
+}
+
+.visor-imagen {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 64px 16px 16px;
+  box-sizing: border-box;
+  border: none;
+  background: transparent;
+}
+
+.visor-imagen[open] {
+  display: grid;
+  place-items: center;
+}
+
+.visor-imagen::backdrop {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.imagen-ampliada {
+  cursor: zoom-out;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-width: 1200px;
+  object-fit: contain;
+}
+
+.cerrar-visor {
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  background: white;
+  color: #111;
+  font-size: 18px;
+  cursor: pointer;
+}
+
 .descripcion {
   color: #111;
   /* font-size:1.1rem; */
   height: 20%;
   font-weight: bold;
   align-items: center;
-  padding: 5px;
+  padding: 0px;
 }
 
 .descripcion p {
@@ -83,7 +142,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: clamp(5px, 4vw, 30px);
+  font-size: clamp(8px, 5vw, 25px);
 }
 
 .oculta {
@@ -98,7 +157,7 @@
   margin: 20px 0;
 }
 
-#contador {
+.contador {
   font-weight: bold;
   color: #444;
   min-width: 120px;

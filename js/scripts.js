@@ -24,6 +24,10 @@ for(let i = 0; i < catalogo.productos.length; i += 4){
                     ${producto.aplicacion}
                 </div>
 
+                 <div class="marca">
+                    ${producto.marca}
+                </div>
+
                 <div class="precio">
                     <p>${producto.precio}</p>
                 </div>
@@ -36,6 +40,66 @@ for(let i = 0; i < catalogo.productos.length; i += 4){
     contenedor.appendChild(hoja);
 
 }
+
+const visor = document.createElement("dialog");
+visor.className = "visor-imagen";
+visor.setAttribute("aria-label", "Imagen ampliada del producto");
+visor.innerHTML = `
+    <button class="cerrar-visor" type="button" aria-label="Cerrar imagen ampliada" autofocus>
+        Cerrar &times;
+    </button>
+    <img class="imagen-ampliada" alt="" title="Toca la imagen para cerrar">
+`;
+document.body.appendChild(visor);
+
+const imagenAmpliada = visor.querySelector(".imagen-ampliada");
+let imagenOrigen;
+
+contenedor.querySelectorAll(".card .imagen").forEach(imagen => {
+    const descripcion = imagen.closest(".card").querySelector(".dato").textContent.trim();
+    imagen.alt = descripcion;
+    imagen.setAttribute("role", "button");
+    imagen.setAttribute("tabindex", "0");
+    imagen.setAttribute("aria-haspopup", "dialog");
+    imagen.setAttribute("aria-label", `Ampliar imagen: ${descripcion}`);
+    imagen.title = "Haz clic o toca para ampliar";
+
+    imagen.addEventListener("click", () => {
+        imagenOrigen = imagen;
+        imagenAmpliada.src = imagen.currentSrc || imagen.src;
+        imagenAmpliada.alt = imagen.alt;
+        visor.showModal();
+        document.documentElement.classList.add("visor-abierto");
+    });
+
+    imagen.addEventListener("keydown", evento => {
+        if(evento.key === "Enter" || evento.key === " "){
+            evento.preventDefault();
+            imagen.click();
+        }
+    });
+});
+
+visor.querySelector(".cerrar-visor").addEventListener("click", () => visor.close());
+
+visor.addEventListener("click", evento => {
+    if(evento.target === visor || evento.target === imagenAmpliada){
+        visor.close();
+    }
+});
+
+visor.addEventListener("keydown", evento => {
+    if(evento.key === "Escape"){
+        evento.preventDefault();
+        visor.close();
+    }
+});
+
+visor.addEventListener("close", () => {
+    document.documentElement.classList.remove("visor-abierto");
+    imagenAmpliada.removeAttribute("src");
+    imagenOrigen.focus({ preventScroll: true });
+});
 
 const hojas = document.querySelectorAll(".hoja");
 const contador = document.getElementById("contador");
