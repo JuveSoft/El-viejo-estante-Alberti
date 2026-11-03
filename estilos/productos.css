@@ -5,6 +5,60 @@
   grid-template-columns: repeat(2, 1fr);
 }
 
+.contenedor {
+  width: min(600px, calc(100% - 24px));
+}
+
+.filtros-catalogo {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.filtros-catalogo label {
+  font-weight: bold;
+}
+
+.filtros-catalogo select,
+.filtros-catalogo button {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px;
+  border: 1px solid #888;
+  border-radius: 8px;
+  background: white;
+  font-size: 16px;
+}
+
+.filtros-catalogo button {
+  cursor: pointer;
+}
+
+.aviso-compatibilidad {
+  font-size: 14px;
+  color: #444;
+}
+
+.resumen-resultados {
+  margin-top: 12px;
+}
+
+.origen-producto {
+  font-size: 12px;
+  color: #0003c2;
+}
+
+body[data-catalogo="general"] .card {
+  height: 38vh;
+  min-height: 280px;
+}
+
+.flechas button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 .hoja_color {
   background-color: aliceblue;
 }
