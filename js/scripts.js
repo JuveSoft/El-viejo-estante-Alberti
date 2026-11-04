@@ -3,6 +3,21 @@ const catalogosDisponibles = window.catalogos;
 const esGeneral = document.body.dataset.catalogo === "general";
 const esperados = document.querySelectorAll("script[data-catalogo]").length || 1;
 
+function marcaDelProducto(producto){
+    const marca = producto.marca ?? producto.Marca ?? "";
+    if(typeof marca !== "string"){
+        contenedor.textContent = "Hay un artículo con la marca del producto mal cargada.";
+        throw new Error(`Marca del producto inválida: ${producto.aplicacion}`);
+    }
+    const nombre = marca.trim();
+    // Estas marcas incluyen el código del repuesto en el mismo campo.
+    const fabricante = /^(Genoud|SM)(?:\s|$)/i.exec(nombre);
+    if(fabricante){
+        return fabricante[1].toUpperCase() === "SM" ? "SM" : "Genoud";
+    }
+    return nombre;
+}
+
 if(!Array.isArray(catalogosDisponibles) || catalogosDisponibles.length !== esperados){
     contenedor.textContent = "No se pudieron cargar todos los catálogos. Recargá la página.";
     throw new Error("Faltan archivos de catálogo");
@@ -16,6 +31,7 @@ const productos = catalogosDisponibles.flatMap(catalogo => catalogo.productos.ma
     }
     return {
         ...producto,
+        marcaProducto: marcaDelProducto(producto),
         estante: catalogo.estante,
         categoria: catalogo.categoria,
         base: catalogo.base
@@ -52,6 +68,11 @@ const filtroMarca = crearSelector(
     "filtro-marca", "Marca de auto", "Todas las marcas", productos.flatMap(p => p.marcasAuto)
 );
 filtroMarca.add(new Option("Sin especificar", "sin-especificar"));
+const filtroMarcaProducto = crearSelector(
+    "filtro-marca-producto", "Marca del producto", "Todas las marcas de producto",
+    productos.map(p => p.marcaProducto).filter(Boolean)
+);
+filtroMarcaProducto.add(new Option("Sin especificar", "sin-especificar"));
 
 const limpiar = document.createElement("button");
 limpiar.type = "button";
@@ -60,7 +81,7 @@ filtros.appendChild(limpiar);
 
 const aviso = document.createElement("p");
 aviso.className = "aviso-compatibilidad";
-aviso.textContent = "La marca no garantiza compatibilidad con todos sus modelos. " +
+aviso.textContent = "La marca de auto no garantiza compatibilidad con todos sus modelos. " +
     "Consultá la aplicación del repuesto. “Sin especificar” no significa universal.";
 filtros.appendChild(aviso);
 
@@ -137,7 +158,11 @@ function filtrar(){
             (filtroMarca.value === "sin-especificar"
                 ? producto.marcasAuto.length === 0
                 : producto.marcasAuto.includes(filtroMarca.value));
-        return coincideEstante && coincideMarca;
+        const coincideMarcaProducto = !filtroMarcaProducto.value ||
+            (filtroMarcaProducto.value === "sin-especificar"
+                ? !producto.marcaProducto
+                : producto.marcaProducto === filtroMarcaProducto.value);
+        return coincideEstante && coincideMarca && coincideMarcaProducto;
     });
     actual = 0;
     resumen.textContent = filtrados.length
@@ -147,11 +172,13 @@ function filtrar(){
 }
 
 filtroMarca.addEventListener("change", filtrar);
+filtroMarcaProducto.addEventListener("change", filtrar);
 if(filtroEstante){
     filtroEstante.addEventListener("change", filtrar);
 }
 limpiar.addEventListener("click", () => {
     filtroMarca.value = "";
+    filtroMarcaProducto.value = "";
     if(filtroEstante){
         filtroEstante.value = "";
     }

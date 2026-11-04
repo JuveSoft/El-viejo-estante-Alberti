@@ -160,3 +160,96 @@ test("las bombas de agua reemplazan la plantilla y aparecen en la búsqueda gene
     assert.equal(generales.length, 1);
     assert.equal(JSON.stringify(generales[0]), JSON.stringify(catalogo));
 });
+
+function cargarVisor(general = true, catalogos = cargar(fuentes)){
+    const elementos = new Map();
+    function elemento(){
+        return {
+            value: "", children: [], eventos: {}, textContent: "",
+            append(...hijos){ this.children.push(...hijos); },
+            appendChild(hijo){ this.append(hijo); },
+            prepend(hijo){ this.children.unshift(hijo); },
+            after(){},
+            add(opcion){ this.children.push(opcion); },
+            replaceChildren(){ this.children = []; },
+            setAttribute(){},
+            addEventListener(tipo, accion){ this.eventos[tipo] = accion; },
+            querySelector(){ return elemento(); }
+        };
+    }
+    const contexto = vm.createContext({
+        window: { catalogos },
+        URL,
+        Option: function(text, value){ return { text, value }; },
+        document: {
+            body: Object.assign(elemento(), { dataset: { catalogo: general ? "general" : "" } }),
+            currentScript: { src: pathToFileURL(path.join(raiz, "js", "scripts.js")).href },
+            querySelector(selector){
+                if(!elementos.has(selector)) elementos.set(selector, elemento());
+                return elementos.get(selector);
+            },
+            querySelectorAll(){ return { length: general ? catalogos.length : 0 }; },
+            getElementById(id){ return this.querySelector(`#${id}`); },
+            createElement: elemento
+        }
+    });
+    vm.runInContext(fs.readFileSync(path.join(raiz, "js", "scripts.js"), "utf8"), contexto);
+    return expresion => vm.runInContext(expresion, contexto);
+}
+
+test("el filtro de producto agrupa códigos sin alterar marcas compuestas ni fichas", () => {
+    const evaluar = cargarVisor();
+    for(const [producto, esperado] of [
+        [{ marca: "Genoud 1050" }, "Genoud"],
+        [{ marca: "genoud 2040" }, "Genoud"],
+        [{ marca: "SM APK 128" }, "SM"],
+        [{ Marca: "Kobla" }, "Kobla"],
+        [{ marca: "  Heliodino  " }, "Heliodino"],
+        [{ marca: "Marca Compuesta" }, "Marca Compuesta"],
+        [{ marca: "" }, ""],
+        [{}, ""]
+    ]){
+        assert.equal(evaluar(`marcaDelProducto(${JSON.stringify(producto)})`), esperado);
+    }
+    assert.throws(() => evaluar('marcaDelProducto({ marca: 42, aplicacion: "Inválida" })'),
+        /Marca del producto inválida/);
+    assert.equal(evaluar('productos.find(p => p.marca === "Genoud 1075").marcaProducto'), "Genoud");
+    const opciones = JSON.parse(evaluar('JSON.stringify(filtroMarcaProducto.children)'));
+    assert.equal(opciones.filter(o => o.value === "Genoud").length, 1);
+    assert.ok(opciones.some(o => o.value === "sin-especificar"));
+    assert.ok(opciones.every(o => !/^Genoud \d/.test(o.value)));
+});
+
+test("los tres filtros se combinan, reinician la página y se limpian juntos", () => {
+    const evaluar = cargarVisor();
+    evaluar(`filtroMarcaProducto.value = "Heliodino";
+        filtroMarca.value = "Fiat";
+        filtroEstante.value = "Bombas de combustible y agua";
+        actual = 3;
+        filtroMarcaProducto.eventos.change();`);
+    assert.equal(evaluar("filtrados.length"), 2);
+    assert.equal(evaluar("actual"), 0);
+    assert.equal(evaluar("contador.textContent"), "Página 1 de 1");
+    evaluar('filtroMarca.value = "Ford"; filtroMarca.eventos.change();');
+    assert.equal(evaluar("filtrados.length"), 0);
+    assert.equal(evaluar("contador.textContent"), "Sin páginas");
+    assert.equal(evaluar("siguiente.disabled && anterior.disabled"), true);
+    evaluar("limpiar.eventos.click();");
+    assert.equal(evaluar("filtrados.length === productos.length"), true);
+    assert.equal(evaluar('filtroMarcaProducto.value + filtroMarca.value + filtroEstante.value'), "");
+    evaluar('filtroMarcaProducto.value = "sin-especificar"; filtrar();');
+    assert.equal(evaluar("filtrados.length > 0 && filtrados.every(p => !p.marcaProducto)"), true);
+});
+
+test("el filtro de producto también funciona en el catálogo local", () => {
+    const evaluar = cargarVisor(false, cargar([fuenteBombas]));
+    evaluar('filtroMarcaProducto.value = "Kobla"; filtroMarcaProducto.eventos.change();');
+    assert.equal(evaluar("filtroEstante"), null);
+    assert.equal(evaluar("filtrados.length"), 10);
+    assert.equal(evaluar("contador.textContent"), "Página 1 de 3");
+    evaluar("siguiente.eventos.click();");
+    assert.equal(evaluar("contador.textContent"), "Página 2 de 3");
+    evaluar("limpiar.eventos.click();");
+    assert.equal(evaluar("filtrados.length"), 19);
+    assert.equal(evaluar("actual"), 0);
+});

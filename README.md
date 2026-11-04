@@ -10,8 +10,15 @@ necesita más espacio en pantallas pequeñas.
 ## Buscar por marca de auto
 
 Desde el índice, **Buscar repuestos por marca de auto** abre [la búsqueda general](buscar.html).
-Permite combinar estante y marca. Cada catálogo también tiene su filtro por marca,
-con cuatro artículos por página y ampliación de fotos al tocar.
+Permite combinar estante, marca de auto y **Marca del producto**. Cada catálogo
+también tiene ambos filtros de marca, con cuatro artículos por página y ampliación
+de fotos al tocar. **Mostrar todos** limpia todos los filtros.
+
+El filtro de producto usa `marca` (o el campo anterior `Marca`). Agrupa códigos
+como `Genoud 1050` y `Genoud 2040` bajo **Genoud**, y `SM APK 128` / `SM FI-58`
+bajo **SM**, sin cambiar el detalle que muestra la ficha. Las demás marcas se
+usan completas, sin recortar nombres compuestos. Un campo vacío o ausente aparece
+al elegir **Sin especificar** en este filtro, sin atribuirle un fabricante.
 
 Cada artículo tiene una lista explícita de marcas compatibles:
 
