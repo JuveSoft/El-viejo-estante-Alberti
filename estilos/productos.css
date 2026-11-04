@@ -36,8 +36,11 @@
 }
 
 .aviso-compatibilidad {
-  font-size: 14px;
+  font-size: 16px;
   color: #444;
+  text-align: justify;
+  padding: 10px;
+
 }
 
 .resumen-resultados {
@@ -174,7 +177,7 @@ html.visor-abierto {
   margin:auto;
   align-items: center;
   text-align: center;
-  height: 20%;  
+  height: 13%;  
 }
 
 .precio {  

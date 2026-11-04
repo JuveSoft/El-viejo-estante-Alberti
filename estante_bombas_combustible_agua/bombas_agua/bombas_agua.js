@@ -1,22 +1,24 @@
 (window.catalogos = window.catalogos || []).push({
     base: new URL(".", document.currentScript.src).href,
 
-    estante: "estante del Encendido",
+    estante: "Bombas de combustible y agua",
 
-    categoria: "Platino y Condensador",
+    categoria: "Bombas de agua",
 
     productos: [
-              {
-            foto: "img/bomba_naf",
-            aplicacion: "Basico 1 polo",
-            marcasAuto: [],
-            precio: "$ 2.500-"
-        },     
         {
-            foto: "img/basico_2_polos.webp",
-            aplicacion: "Pata pareja",
-            marcasAuto: [],
-            precio: "$ 2.500-"
+            foto: "img/bomba_agua_heliodino_F-147_D.png",
+            aplicacion: "Fiat 147 diésel",
+            marcasAuto: ["Fiat"],
+            marca: "Heliodino",
+            precio: "$ 45.000-"
+        },
+        {
+            foto: "img/bomba_agua_heliodino_F-duna_uno-M_tipo_A_A_todos.png",
+            aplicacion: "Fiat Duna / Uno - Motor Tipo",
+            marcasAuto: ["Fiat"],
+            marca: "Heliodino",
+            precio: "$ 45.000-"
         }
     ]
 });

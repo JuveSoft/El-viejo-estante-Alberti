@@ -16,6 +16,7 @@ body {
 .titulo_hoja {
   position: sticky;
   top: 0;
+  width: 100%;
   background: #ececec;
   display: block;
   margin: 5px auto;

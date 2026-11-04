@@ -72,3 +72,91 @@ test("las páginas de origen cargan su catálogo y el visor compartido", () => {
             assert.ok(fs.existsSync(path.resolve(directorio, ...href.split("/"))), href));
     }
 });
+
+const fuenteBombas = path.join(raiz, "estante_bombas_combustible_agua",
+    "bombas_combustible", "bombas_combustible.js");
+
+test("las bombas de combustible tienen fotos existentes con mayúsculas exactas", () => {
+    const catalogo = cargar([fuenteBombas])[0];
+    for(const producto of catalogo.productos){
+        const archivo = path.resolve(path.dirname(fuenteBombas), ...producto.foto.split("/"));
+        assert.ok(fs.existsSync(archivo), producto.foto);
+        assert.ok(fs.readdirSync(path.dirname(archivo)).includes(path.basename(archivo)),
+            producto.foto);
+    }
+});
+
+test("todas las fotos de bombas de combustible tienen ficha y las nuevas usan marca vacía y precio provisorio", () => {
+    const productos = cargar([fuenteBombas])[0].productos;
+    const fotos = fs.readdirSync(path.join(path.dirname(fuenteBombas), "img"))
+        .filter(nombre => /\.(png|webp)$/i.test(nombre));
+    for(const foto of fotos){
+        assert.equal(productos.filter(p => p.foto === `img/${foto}`).length, 1, foto);
+    }
+    const nuevas = productos.filter(p => p.foto.endsWith(".png"));
+    assert.equal(nuevas.length, 9);
+    for(const producto of nuevas){
+        assert.equal(producto.Marca, "");
+        assert.equal(producto.precio, "$ 45.000-");
+    }
+    const esperadas = [
+        ["IKA - Motor de 4 cilindros", ["IKA"]],
+        ["Fiat Regata 100 / Weekend - Motor 1.6", ["Fiat"]],
+        ["Motor Perkins 6-305 - Pata corta", []],
+        ["Renault 12 / 18 - Motor 1.4", ["Renault"]],
+        ["Renault 12 / 18 - Motor 1.4 - Con retorno", ["Renault"]],
+        ["Citroën 3CV", ["Citroën"]],
+        ["Volkswagen Escarabajo / Kombi", ["Volkswagen"]],
+        ["Ford Fairlane V8", ["Ford"]],
+        ["Ford Pick-up 1992 - Con retorno", ["Ford"]]
+    ];
+    for(const [aplicacion, marcas] of esperadas){
+        const producto = nuevas.find(p => p.aplicacion === aplicacion);
+        assert.ok(producto, aplicacion);
+        assert.deepEqual(Array.from(producto.marcasAuto), marcas);
+    }
+});
+
+test("las bombas pendientes de foto conservan sus fichas y precios originales", () => {
+    const productos = cargar([fuenteBombas])[0].productos;
+    const pendientes = productos.filter(p => p.foto === "img/foto_pendiente.svg");
+    assert.equal(productos.length, 19);
+    assert.equal(pendientes.length, 3);
+    for(const [aplicacion, precio] of [
+        ["Fiat 128 / Varios", "$ 40.000-"],
+        ["Motor Perkins", "$ 48.000-"],
+        ["Ford V8", "$ 50.000-"]
+    ]){
+        assert.ok(pendientes.some(p => p.aplicacion === aplicacion && p.precio === precio));
+    }
+    assert.ok(productos.every(p => !p.aplicacion.includes("Reanult")));
+});
+
+test("las bombas de agua reemplazan la plantilla y aparecen en la búsqueda general", () => {
+    const fuente = path.join(raiz, "estante_bombas_combustible_agua",
+        "bombas_agua", "bombas_agua.js");
+    assert.ok(fuentes.includes(fuente));
+    const catalogo = cargar([fuente])[0];
+    assert.equal(catalogo.estante, "Bombas de combustible y agua");
+    assert.equal(catalogo.categoria, "Bombas de agua");
+    assert.deepEqual(Array.from(catalogo.productos, p => p.aplicacion), [
+        "Fiat 147 diésel", "Fiat Duna / Uno - Motor Tipo"
+    ]);
+    const fotos = fs.readdirSync(path.join(path.dirname(fuente), "img"))
+        .filter(nombre => nombre.startsWith("bomba_agua_"));
+    assert.equal(fotos.length, 2);
+    for(const producto of catalogo.productos){
+        assert.deepEqual(Array.from(producto.marcasAuto), ["Fiat"]);
+        assert.equal(producto.marca, "Heliodino");
+        assert.equal(producto.precio, "$ 45.000-");
+        const archivo = path.resolve(path.dirname(fuente), ...producto.foto.split("/"));
+        assert.ok(fs.existsSync(archivo), producto.foto);
+        assert.ok(fotos.includes(path.basename(archivo)), producto.foto);
+    }
+    for(const foto of fotos){
+        assert.equal(catalogo.productos.filter(p => p.foto === `img/${foto}`).length, 1);
+    }
+    const generales = cargar(fuentes).filter(c => c.categoria === "Bombas de agua");
+    assert.equal(generales.length, 1);
+    assert.equal(JSON.stringify(generales[0]), JSON.stringify(catalogo));
+});
