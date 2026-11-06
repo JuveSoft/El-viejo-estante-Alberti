@@ -43,8 +43,8 @@ Los archivos de datos se registran en `window.catalogos`; `base` conserva la ubi
 de sus imágenes tanto desde su página como desde la búsqueda general. Editar un
 artículo en su archivo original actualiza ambas vistas.
 
-La búsqueda general carga nueve catálogos: platinos, platino y condensador,
-tapas, bujías, cables de bujías, portalámparas, bombas de combustible, bombas de
+La búsqueda general carga diez catálogos: platinos, platino y condensador,
+tapas, bujías, cables de bujías, portalámparas, lámparas, bombas de combustible, bombas de
 agua y filtros de aceite. Las aplicaciones y precios sin confirmar se muestran
 sin atribuir compatibilidades y como **Consultar precio**, respectivamente.
 No incluye el catálogo antiguo de tapas ni las plantillas de correas, embragues
@@ -55,6 +55,16 @@ en [buscar.html](buscar.html), antes de [js/scripts.js](js/scripts.js).
 La carga informa errores si falta un catálogo o un artículo tiene `marcasAuto`
 inválido. Los filtros no corrigen las fotos faltantes ni las aplicaciones originales.
 
+En bujías se incorporaron nueve fichas de Motorcraft, Bosch y Wega, para un
+total de 33. Se conservan los códigos y las aplicaciones indicadas por las fotos;
+la marca del fabricante no se usa para inferir la marca de auto compatible.
+Las tres lámparas tienen su [catálogo propio](Iluminacion/lamparas/index.html),
+separado de los ocho portalámparas y accesible desde el índice de iluminación.
+Las bujías nuevas muestran **Consultar precio**. Las lámparas tienen precios
+cargados de **$ 20.000** (Osram H7), **$ 8.000** (9007) y **$ 5.000** (6 V).
+No se asigna compatibilidad por marca de auto a una lámpara solo por su formato
+o potencia.
+
 En bombas de combustible, las fichas nuevas toman la aplicación indicada en el
 nombre de cada foto, sin ampliar compatibilidades. La marca del repuesto queda
 vacía cuando no está confirmada y se cargó un precio provisorio de **$ 45.000-**
@@ -64,6 +74,16 @@ precios y muestran **Foto pendiente**; no se fusionaron con otros artículos.
 La foto de la Ford Pick-up 1992 se referencia desde bombas de agua, donde está
 guardada. Los nombres de archivo originales se conservan aunque tengan errores
 de escritura; las correcciones se muestran en la aplicación del artículo.
+
+Se incorporaron otras trece bombas de combustible a partir de las fotos nuevas:
+doce identificadas como **Kobla** y una de Renault 4 / 6 sin fabricante confirmado.
+Estas fichas muestran **Consultar precio** y mantienen separadas las variantes
+de Taunus, Sierra y las versiones con/sin retorno. Los años y aplicaciones
+provienen de los nombres de archivo y requieren verificar compatibilidad.
+El nombre de la foto de Valiant repite la serie II; la serie exacta queda
+**a confirmar**, sin corregirla por suposición. Perkins 6-354 se identifica como
+diésel y no se atribuye a una marca de auto. Las 19 fichas anteriores no cambian:
+el catálogo reúne 32 artículos y sigue compartido con la búsqueda general.
 
 En bombas de agua se reemplazaron los datos de ejemplo por las dos fotos de
 Fiat 147 diésel y Fiat Duna / Uno con motor Tipo, con marca **Heliodino** y precio

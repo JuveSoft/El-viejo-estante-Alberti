@@ -12,7 +12,7 @@ const fuentes = [...pagina.matchAll(/<script data-catalogo src="([^"]+)"/g)]
 const marcasValidas = new Set([
     "Alfa Romeo", "BMW", "Chevrolet", "Citroën", "Dodge", "Fiat", "Ford",
     "IKA", "Jeep", "Kaiser", "Lada", "Moskvitch", "Peugeot", "Renault",
-    "SEAT", "Toyota", "Volkswagen"
+    "SEAT", "Siam", "Toyota", "Volkswagen"
 ]);
 
 function cargar(archivos){
@@ -50,7 +50,7 @@ test("bujías y cables usan sus fotos y páginas correctas", () => {
     assert.ok(fuentes.includes(fuenteCables));
 
     for(const [fuente, categoria, cantidad] of [
-        [fuenteBujias, "Bujías", 24],
+        [fuenteBujias, "Bujías", 33],
         [fuenteCables, "Cables de bujías", 5]
     ]){
         const catalogo = cargar([fuente])[0];
@@ -80,6 +80,52 @@ test("bujías y cables usan sus fotos y páginas correctas", () => {
     ]){
         assert.ok(fs.existsSync(ruta), ruta);
     }
+});
+
+test("las nueve bujías agregadas conservan códigos, fabricantes y aplicaciones identificadas", () => {
+    const fuente = path.join(raiz, "estante_encendido", "Bujias", "bujias.js");
+    const nuevas = cargar([fuente])[0].productos.slice(24);
+    assert.equal(nuevas.length, 9);
+    for(const codigo of ["AGSF22C", "AGSF32C", "AGSP32C", "AGSR32C"]){
+        const producto = nuevas.find(p => p.aplicacion === `Motorcraft ${codigo}`);
+        assert.ok(producto, codigo);
+        assert.equal(producto.marca, "Motorcraft");
+        assert.equal(producto.marcasAuto.length, 0);
+    }
+    const h56 = nuevas.find(p => p.aplicacion.startsWith("Bosch H56"));
+    assert.deepEqual(Array.from(h56.marcasAuto), ["Ford", "Renault"]);
+    for(const marca of ["Bosch", "Wega"]){
+        assert.ok(nuevas.some(p => p.marca === marca && p.marcasAuto.includes("Ford")));
+    }
+    assert.ok(nuevas.every(p => p.precio === "Consultar precio"));
+});
+
+test("las lámparas tienen catálogo propio y cubren las fotos sin mezclarse con portalámparas", () => {
+    const fuente = path.join(raiz, "Iluminacion", "lamparas", "lamparas.js");
+    assert.ok(fuentes.includes(fuente));
+    const catalogo = cargar([fuente])[0];
+    assert.equal(catalogo.categoria, "Lámparas");
+    assert.equal(catalogo.estante, "Iluminación");
+    assert.equal(catalogo.productos.length, 3);
+    assert.deepEqual(Array.from(catalogo.productos, p => p.foto), [
+        "../img/Osram_h7_cool_blue.png",
+        "../img/Lamp_9007_100_80.png",
+        "../img/lamp_6v_45W40.jpg"
+    ]);
+    assert.equal(catalogo.productos[0].marca, "Osram");
+    assert.match(catalogo.productos[0].aplicacion, /12 V - 55 W/);
+    assert.deepEqual(Array.from(catalogo.productos, p => p.precio), [
+        "$ 20.000,-", "$ 8.000,-", "$ 5.000,-"
+    ]);
+    for(const producto of catalogo.productos){
+        const archivo = path.resolve(path.dirname(fuente), ...producto.foto.split("/"));
+        assert.ok(fs.readdirSync(path.dirname(archivo)).includes(path.basename(archivo)));
+        assert.equal(producto.marcasAuto.length, 0);
+    }
+    const portalamparas = cargar(fuentes).find(c => c.categoria === "Portalámparas");
+    assert.equal(portalamparas.productos.length, 8);
+    const indice = fs.readFileSync(path.join(raiz, "Iluminacion", "indice.html"), "utf8");
+    assert.match(indice, /href="lamparas\/index\.html"/);
 });
 
 test("multimarca y fabricantes de repuestos son campos separados", () => {
@@ -126,14 +172,14 @@ test("las bombas de combustible tienen fotos existentes con mayúsculas exactas"
     }
 });
 
-test("todas las fotos de bombas de combustible tienen ficha y las nuevas usan marca vacía y precio provisorio", () => {
+test("todas las fotos de bombas de combustible tienen ficha y las nueve incorporaciones originales conservan sus datos", () => {
     const productos = cargar([fuenteBombas])[0].productos;
     const fotos = fs.readdirSync(path.join(path.dirname(fuenteBombas), "img"))
         .filter(nombre => /\.(png|webp)$/i.test(nombre));
     for(const foto of fotos){
         assert.equal(productos.filter(p => p.foto === `img/${foto}`).length, 1, foto);
     }
-    const nuevas = productos.filter(p => p.foto.endsWith(".png"));
+    const nuevas = productos.slice(0, 19).filter(p => p.foto.endsWith(".png"));
     assert.equal(nuevas.length, 9);
     for(const producto of nuevas){
         assert.equal(producto.Marca, "");
@@ -157,10 +203,42 @@ test("todas las fotos de bombas de combustible tienen ficha y las nuevas usan ma
     }
 });
 
+test("las trece bombas agregadas tienen aplicaciones, marcas y precios pendientes sin mezclar variantes", () => {
+    const catalogo = cargar([fuenteBombas])[0];
+    const esperadas = [
+        ["Bomba_kobla_1129_r-11_c.retorno.png", "Renault 11 - Con retorno - Kobla 1129", ["Renault"], "Kobla"],
+        ["Kobla_nafta-Ford_Taunus_Equipo_original_hsta_85.png", "Ford Taunus - Equipo original hasta 1985", ["Ford"], "Kobla"],
+        ["Kobla_nafta_Citroen_3CV-Ami 8.png", "Citroën 3CV / Ami 8", ["Citroën"], "Kobla"],
+        ["kobla_diesel_Perkins_6-354_6 cilindros_Iny-Directa_Todos.png", "Motor Perkins 6-354 diésel - 6 cilindros - Inyección directa", [], "Kobla"],
+        ["kobla_nafta_Ford_F100-150_Pick-Up_6_cil_Con-retorno-89.png", "Ford F100 / F150 Pick-up - 6 cilindros - Con retorno - 1989", ["Ford"], "Kobla"],
+        ["kobla_nafta_Ford_Sierra_ 2.3-XR4_Todos.png", "Ford Sierra 2.3 / XR4", ["Ford"], "Kobla"],
+        ["kobla_nafta_Siam_Di-Tella_Todos..png", "Siam Di Tella", ["Siam"], "Kobla"],
+        ["kobla_nafta_Sierra_1.6_Todos.png", "Ford Sierra 1.6", ["Ford"], "Kobla"],
+        ["kobla_nafta_Taunus_Equipo_original_77-80.png", "Ford Taunus - Equipo original 1977-1980", ["Ford"], "Kobla"],
+        ["kobla_nafta_Taunus_Equipo_original_hasta_81-82.png", "Ford Taunus - Equipo original hasta 1981-1982", ["Ford"], "Kobla"],
+        ["kobla_nafta_Valiant_II-II-IV_Polara_Pick-Up_Todos.png", "Valiant / Dodge Polara / Pick-up - Serie de Valiant a confirmar", ["Dodge"], "Kobla"],
+        ["kobla_nafta__Taunus_Equipo_original_74-77.png", "Ford Taunus - Equipo original 1974-1977", ["Ford"], "Kobla"],
+        ["nafta_R4-R6_Sin_retorno_Brazo_Largo84.png", "Renault 4 / 6 - Sin retorno - Brazo largo - 1984", ["Renault"], ""]
+    ];
+    assert.equal(catalogo.productos.length, 32);
+    assert.equal(catalogo.productos.filter(p => p.precio === "Consultar precio").length, 13);
+    for(const [foto, aplicacion, marcas, marca] of esperadas){
+        const producto = catalogo.productos.find(p => p.foto === `img/${foto}`);
+        assert.ok(producto, foto);
+        assert.equal(producto.aplicacion, aplicacion);
+        assert.deepEqual(Array.from(producto.marcasAuto), marcas);
+        assert.equal(producto.Marca, marca);
+        assert.equal(producto.precio, "Consultar precio");
+    }
+    const generales = cargar(fuentes).filter(c => c.categoria === "Bombas de combustible");
+    assert.equal(generales.length, 1);
+    assert.equal(JSON.stringify(generales[0]), JSON.stringify(catalogo));
+});
+
 test("las bombas pendientes de foto conservan sus fichas y precios originales", () => {
     const productos = cargar([fuenteBombas])[0].productos;
     const pendientes = productos.filter(p => p.foto === "img/foto_pendiente.svg");
-    assert.equal(productos.length, 19);
+    assert.equal(productos.length, 32);
     assert.equal(pendientes.length, 3);
     for(const [aplicacion, precio] of [
         ["Fiat 128 / Varios", "$ 40.000-"],
@@ -285,11 +363,11 @@ test("el filtro de producto también funciona en el catálogo local", () => {
     const evaluar = cargarVisor(false, cargar([fuenteBombas]));
     evaluar('filtroMarcaProducto.value = "Kobla"; filtroMarcaProducto.eventos.change();');
     assert.equal(evaluar("filtroEstante"), null);
-    assert.equal(evaluar("filtrados.length"), 10);
-    assert.equal(evaluar("contador.textContent"), "Página 1 de 3");
+    assert.equal(evaluar("filtrados.length"), 22);
+    assert.equal(evaluar("contador.textContent"), "Página 1 de 6");
     evaluar("siguiente.eventos.click();");
-    assert.equal(evaluar("contador.textContent"), "Página 2 de 3");
+    assert.equal(evaluar("contador.textContent"), "Página 2 de 6");
     evaluar("limpiar.eventos.click();");
-    assert.equal(evaluar("filtrados.length"), 19);
+    assert.equal(evaluar("filtrados.length"), 32);
     assert.equal(evaluar("actual"), 0);
 });

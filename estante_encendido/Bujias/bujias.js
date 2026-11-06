@@ -170,6 +170,69 @@
             marcasAuto: ["Ford"],
             marca: "Champion",
             precio: "Consultar precio"
+        },
+        {
+            foto: "img/Bujia_motorcraft_agsf22c.png",
+            aplicacion: "Motorcraft AGSF22C",
+            marcasAuto: [],
+            marca: "Motorcraft",
+            precio: "Consultar precio"
+        },
+        {
+            foto: "img/Bujia_motorcraft_agsf32c.png",
+            aplicacion: "Motorcraft AGSF32C",
+            marcasAuto: [],
+            marca: "Motorcraft",
+            precio: "Consultar precio"
+        },
+        {
+            foto: "img/Bujia_motorcraft_agsp32c.png",
+            aplicacion: "Motorcraft AGSP32C",
+            marcasAuto: [],
+            marca: "Motorcraft",
+            precio: "Consultar precio"
+        },
+        {
+            foto: "img/Bujia_motorcraft_agsr32c.png",
+            aplicacion: "Motorcraft AGSR32C",
+            marcasAuto: [],
+            marca: "Motorcraft",
+            precio: "Consultar precio"
+        },
+        {
+            foto: "img/bujia_bosch_4-electr_H56_taunus_r-18.png",
+            aplicacion: "Bosch H56 - 4 electrodos - Ford Taunus / Renault 18",
+            marcasAuto: ["Ford", "Renault"],
+            marca: "Bosch",
+            precio: "Consultar precio"
+        },
+        {
+            foto: "img/bujia_bosch_4-electr_W78G.png",
+            aplicacion: "Bosch W78G - 4 electrodos",
+            marcasAuto: [],
+            marca: "Bosch",
+            precio: "Consultar precio"
+        },
+        {
+            foto: "img/bujia_bosch_D7BC_ford_1.6_3.0_3.6.png",
+            aplicacion: "Bosch D7BC - Ford 1.6 / 3.0 / 3.6",
+            marcasAuto: ["Ford"],
+            marca: "Bosch",
+            precio: "Consultar precio"
+        },
+        {
+            foto: "img/bujia_wega_f15yc_ford_1.6-3.0-3.6.png",
+            aplicacion: "Wega F15YC - Ford 1.6 / 3.0 / 3.6",
+            marcasAuto: ["Ford"],
+            marca: "Wega",
+            precio: "Consultar precio"
+        },
+        {
+            foto: "img/bujia_wega_n15yc_rosca_corta.png",
+            aplicacion: "Wega N15YC - Rosca corta",
+            marcasAuto: [],
+            marca: "Wega",
+            precio: "Consultar precio"
         }
     ]
 });

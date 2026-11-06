@@ -138,6 +138,97 @@
             marcasAuto: ["Ford"],
             Marca: "",
             precio: "$ 45.000-"
+        },
+        {
+            foto: "img/Bomba_kobla_1129_r-11_c.retorno.png",
+            aplicacion: "Renault 11 - Con retorno - Kobla 1129",
+            marcasAuto: ["Renault"],
+            Marca: "Kobla",
+            precio: "Consultar precio"
+        },
+        {
+            foto: "img/Kobla_nafta-Ford_Taunus_Equipo_original_hsta_85.png",
+            aplicacion: "Ford Taunus - Equipo original hasta 1985",
+            marcasAuto: ["Ford"],
+            Marca: "Kobla",
+            precio: "Consultar precio"
+        },
+        {
+            foto: "img/Kobla_nafta_Citroen_3CV-Ami 8.png",
+            aplicacion: "Citroën 3CV / Ami 8",
+            marcasAuto: ["Citroën"],
+            Marca: "Kobla",
+            precio: "Consultar precio"
+        },
+        {
+            foto: "img/kobla_diesel_Perkins_6-354_6 cilindros_Iny-Directa_Todos.png",
+            aplicacion: "Motor Perkins 6-354 diésel - 6 cilindros - Inyección directa",
+            marcasAuto: [],
+            Marca: "Kobla",
+            precio: "Consultar precio"
+        },
+        {
+            foto: "img/kobla_nafta_Ford_F100-150_Pick-Up_6_cil_Con-retorno-89.png",
+            aplicacion: "Ford F100 / F150 Pick-up - 6 cilindros - Con retorno - 1989",
+            marcasAuto: ["Ford"],
+            Marca: "Kobla",
+            precio: "Consultar precio"
+        },
+        {
+            foto: "img/kobla_nafta_Ford_Sierra_ 2.3-XR4_Todos.png",
+            aplicacion: "Ford Sierra 2.3 / XR4",
+            marcasAuto: ["Ford"],
+            Marca: "Kobla",
+            precio: "Consultar precio"
+        },
+        {
+            foto: "img/kobla_nafta_Siam_Di-Tella_Todos..png",
+            aplicacion: "Siam Di Tella",
+            marcasAuto: ["Siam"],
+            Marca: "Kobla",
+            precio: "Consultar precio"
+        },
+        {
+            foto: "img/kobla_nafta_Sierra_1.6_Todos.png",
+            aplicacion: "Ford Sierra 1.6",
+            marcasAuto: ["Ford"],
+            Marca: "Kobla",
+            precio: "Consultar precio"
+        },
+        {
+            foto: "img/kobla_nafta_Taunus_Equipo_original_77-80.png",
+            aplicacion: "Ford Taunus - Equipo original 1977-1980",
+            marcasAuto: ["Ford"],
+            Marca: "Kobla",
+            precio: "Consultar precio"
+        },
+        {
+            foto: "img/kobla_nafta_Taunus_Equipo_original_hasta_81-82.png",
+            aplicacion: "Ford Taunus - Equipo original hasta 1981-1982",
+            marcasAuto: ["Ford"],
+            Marca: "Kobla",
+            precio: "Consultar precio"
+        },
+        {
+            foto: "img/kobla_nafta_Valiant_II-II-IV_Polara_Pick-Up_Todos.png",
+            aplicacion: "Valiant / Dodge Polara / Pick-up - Serie de Valiant a confirmar",
+            marcasAuto: ["Dodge"],
+            Marca: "Kobla",
+            precio: "Consultar precio"
+        },
+        {
+            foto: "img/kobla_nafta__Taunus_Equipo_original_74-77.png",
+            aplicacion: "Ford Taunus - Equipo original 1974-1977",
+            marcasAuto: ["Ford"],
+            Marca: "Kobla",
+            precio: "Consultar precio"
+        },
+        {
+            foto: "img/nafta_R4-R6_Sin_retorno_Brazo_Largo84.png",
+            aplicacion: "Renault 4 / 6 - Sin retorno - Brazo largo - 1984",
+            marcasAuto: ["Renault"],
+            Marca: "",
+            precio: "Consultar precio"
         }
     ]
 });
