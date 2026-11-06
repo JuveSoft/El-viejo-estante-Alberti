@@ -43,9 +43,10 @@ Los archivos de datos se registran en `window.catalogos`; `base` conserva la ubi
 de sus imágenes tanto desde su página como desde la búsqueda general. Editar un
 artículo en su archivo original actualiza ambas vistas.
 
-La búsqueda general carga los ocho catálogos existentes de platinos, platino y
-condensador, tapas, bujías, portalámparas, bombas de combustible, bombas de agua
-y filtros de aceite.
+La búsqueda general carga nueve catálogos: platinos, platino y condensador,
+tapas, bujías, cables de bujías, portalámparas, bombas de combustible, bombas de
+agua y filtros de aceite. Las aplicaciones y precios sin confirmar se muestran
+sin atribuir compatibilidades y como **Consultar precio**, respectivamente.
 No incluye el catálogo antiguo de tapas ni las plantillas de correas, embragues
 y filtros generales, que todavía tienen datos de ejemplo.
 Para incorporar otro catálogo terminado, agregar su etiqueta `<script data-catalogo>`

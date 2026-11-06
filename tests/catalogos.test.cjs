@@ -42,6 +42,46 @@ test("los catálogos comparten datos sin colisiones", () => {
     });
 });
 
+test("bujías y cables usan sus fotos y páginas correctas", () => {
+    const fuenteBujias = path.join(raiz, "estante_encendido", "Bujias", "bujias.js");
+    const fuenteCables = path.join(raiz, "estante_encendido",
+        "Cable de bujías_y_Bujías", "cables.js");
+    assert.ok(fuentes.includes(fuenteBujias));
+    assert.ok(fuentes.includes(fuenteCables));
+
+    for(const [fuente, categoria, cantidad] of [
+        [fuenteBujias, "Bujías", 24],
+        [fuenteCables, "Cables de bujías", 5]
+    ]){
+        const catalogo = cargar([fuente])[0];
+        const productos = catalogo.productos;
+        const directorioImagenes = path.join(path.dirname(fuente), "img");
+        const fotos = fs.readdirSync(directorioImagenes)
+            .filter(nombre => /\.(png|jpe?g|webp)$/i.test(nombre));
+        assert.equal(catalogo.categoria, categoria);
+        assert.equal(productos.length, cantidad);
+        assert.equal(fotos.length, cantidad);
+        for(const producto of productos){
+            const archivo = path.resolve(path.dirname(fuente), ...producto.foto.split("/"));
+            assert.ok(fs.existsSync(archivo), producto.foto);
+            assert.equal(productos.filter(p => p.foto === producto.foto).length, 1);
+            assert.equal(producto.precio, "Consultar precio");
+        }
+        for(const foto of fotos){
+            assert.equal(productos.filter(p => p.foto === `img/${foto}`).length, 1, foto);
+        }
+    }
+
+    const indice = fs.readFileSync(path.join(raiz, "estante_encendido", "indice.html"), "utf8");
+    assert.match(indice, /href="Bujias\/indice\.html"/);
+    for(const ruta of [
+        path.join(raiz, "estante_encendido", "Bujias", "indice.html"),
+        path.join(raiz, "estante_encendido", "Cable de bujías_y_Bujías", "index.html")
+    ]){
+        assert.ok(fs.existsSync(ruta), ruta);
+    }
+});
+
 test("multimarca y fabricantes de repuestos son campos separados", () => {
     const productos = cargar(fuentes).flatMap(c => c.productos);
     const tapa = productos.find(p => p.foto.endsWith("Tapa_distr_genoud_1075_Varios.jpeg"));
