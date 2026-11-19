@@ -2,24 +2,54 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>El Estante</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">    
+<meta name="robots" content="index,follow">
+<meta name="keywords" content="Venta de repuestos y accesorios del automotor, repuestos antiguos, accesorios antiguos">    
+<meta name="description"
+content="El Viejo Estante Alberti. Venta de repuestos y accesorios del automotor anteriores al año 2000, piezas difíciles de conseguir y artículos clásicos para vehículos antiguos.">
+
+<title>El Viejo Estante Alberti | Repuestos y Accesorios Clásicos</title>
 
 <style>
 
 body{
-    margin:0;
-   
+    margin:0;   
     min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
+    font-family: Arial, sans-serif;
+}
+.contenedor-caratula{
+  max-width: 600px;
+  max-height: 100vh;
+  flex: 1;
+  margin: 0px auto;
 }
 
 .caratula{
     width:min(600px,95vw);
     text-align:center;
-    
+    /* max-height:85vh;
+    overflow-y: auto; */
+    margin:0 auto;   
+}
+
+.titulo_hoja h1{
+    font-size: clamp(12px, 6vw, 35px);
+    text-align: center;   
+}
+
+.titulo_hoja h2{
+    font-size: clamp(10px, 4.5vw, 20px);
+    text-align: center;   
+    color: blue;
+}
+.titulo_hoja p{
+    font-size: clamp(4px, 4vw, 20px);
+    margin:0 20px 20px 20px;
+    text-align: center;
+    line-height: 1.5;
 }
 
 .imagen{    
@@ -33,7 +63,14 @@ body{
 
 </head>
 <body>
+    <div class="contenedor-caratula">
+        <div class="titulo_hoja">
 
+<h1>El viejo estante Alberti</h1>
+<h2>Repuestos y accesorios clásicos para vehículos anteriores al año 2000</h2>
+<p>Venta de repuestos y accesorios del automotor antes de los años 2000 y un poquito mas.</p>    
+
+</div>
 <div class="caratula">    
 
     <a href="indice.html" class="boton"><img src="imagenes/caratula_principal.jpg" alt="Carátula Estante" class="imagen">
