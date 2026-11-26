@@ -34,7 +34,8 @@ const productos = catalogosDisponibles.flatMap(catalogo => catalogo.productos.ma
         marcaProducto: marcaDelProducto(producto),
         estante: catalogo.estante,
         categoria: catalogo.categoria,
-        base: catalogo.base
+        base: catalogo.base,
+        pagina: catalogo.pagina ?? "index.html"
     };
 }));
 
@@ -129,7 +130,7 @@ function mostrarPagina(){
         if(esGeneral){
             const origen = document.createElement("a");
             origen.className = "origen-producto";
-            origen.href = new URL("index.html", producto.base).href;
+            origen.href = new URL(producto.pagina, producto.base).href;
             origen.textContent = `${producto.estante} · ${producto.categoria}`;
             tarjeta.appendChild(origen);
         }

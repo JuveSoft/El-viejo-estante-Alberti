@@ -43,9 +43,9 @@ Los archivos de datos se registran en `window.catalogos`; `base` conserva la ubi
 de sus imágenes tanto desde su página como desde la búsqueda general. Editar un
 artículo en su archivo original actualiza ambas vistas.
 
-La búsqueda general carga diez catálogos: platinos, platino y condensador,
+La búsqueda general carga doce catálogos: platinos, platino y condensador,
 tapas, bujías, cables de bujías, portalámparas, lámparas, bombas de combustible, bombas de
-agua y filtros de aceite. Las aplicaciones y precios sin confirmar se muestran
+agua, filtros de aceite y plásticos delanteros y traseros. Las aplicaciones y precios sin confirmar se muestran
 sin atribuir compatibilidades y como **Consultar precio**, respectivamente.
 No incluye el catálogo antiguo de tapas ni las plantillas de correas, embragues
 y filtros generales, que todavía tienen datos de ejemplo.
@@ -74,6 +74,14 @@ precios y muestran **Foto pendiente**; no se fusionaron con otros artículos.
 La foto de la Ford Pick-up 1992 se referencia desde bombas de agua, donde está
 guardada. Los nombres de archivo originales se conservan aunque tengan errores
 de escritura; las correcciones se muestran en la aplicación del artículo.
+
+Los plásticos delanteros incluyen las fotos cuyos nombres indican `del` o
+`delantero`. Las aplicaciones, años y lados provienen de esos nombres y deben
+confirmarse; la marca del repuesto queda sin especificar y el precio como
+**Consultar precio**. Los plásticos traseros tienen una página separada y suman
+tres fotos identificadas como `tras`; las dos fichas Chevrolet existentes conservan
+sus precios. El campo «Trasero» se retiró de marca del producto porque no indica
+fabricante. Las fotos sin posición identificada en el nombre se dejaron pendientes.
 
 Se incorporaron otras trece bombas de combustible a partir de las fotos nuevas:
 doce identificadas como **Kobla** y una de Renault 4 / 6 sin fabricante confirmado.

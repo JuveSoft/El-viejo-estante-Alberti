@@ -15,6 +15,36 @@ const marcasValidas = new Set([
     "SEAT", "Siam", "Toyota", "Volkswagen"
 ]);
 
+test("los plásticos delanteros cubren solo las fotos identificadas y conservan sus aplicaciones", () => {
+    const fuente = path.join(raiz, "estante_accesorios", "estante_motor", "plasticos", "delanteros.js");
+    assert.ok(fuentes.includes(fuente));
+    const catalogo = cargar([fuente])[0];
+    assert.equal(catalogo.estante, "Accesorios");
+    assert.equal(catalogo.categoria, "Plásticos delanteros");
+    const imagenes = fs.readdirSync(path.join(path.dirname(fuente), "img"))
+        .filter(nombre => /(?:^|[_-])del(?:antero)?(?:[_\-.]|$)/i.test(nombre));
+    assert.equal(imagenes.length, 11);
+    assert.equal(catalogo.productos.length, imagenes.length);
+    for(const foto of imagenes){
+        const productos = catalogo.productos.filter(p => p.foto === `img/${foto}`);
+        assert.equal(productos.length, 1, foto);
+        assert.ok(productos[0].aplicacion.includes("Delantero"), foto);
+        assert.equal(productos[0].precio, "Consultar precio");
+        assert.equal(productos[0].marca ?? productos[0].Marca ?? "", "");
+    }
+    for(const [modelo, marca] of [
+        ["Ford F-100", "Ford"], ["Ford Falcon", "Ford"], ["Fiat 128 SE", "Fiat"],
+        ["Fiat Spazio", "Fiat"], ["Fiat Palio / Siena", "Fiat"],
+        ["Peugeot Partner", "Peugeot"], ["Volkswagen Polo / Caddy", "Volkswagen"],
+        ["Renault 12", "Renault"], ["Volkswagen 1500", "Volkswagen"]
+    ]){
+        const productos = catalogo.productos.filter(p => p.aplicacion.startsWith(modelo));
+        assert.ok(productos.length > 0, modelo);
+        assert.ok(productos.every(p => JSON.stringify(p.marcasAuto) === JSON.stringify([marca])), modelo);
+    }
+    assert.equal(catalogo.productos.filter(p => p.aplicacion.includes("izquierdo / derecho")).length, 4);
+});
+
 function cargar(archivos){
     const contexto = vm.createContext({ window: {}, document: {}, URL });
     for(const archivo of archivos){
@@ -147,7 +177,8 @@ test("multimarca y fabricantes de repuestos son campos separados", () => {
 test("las páginas de origen cargan su catálogo y el visor compartido", () => {
     for(const fuente of fuentes){
         const directorio = path.dirname(fuente);
-        const html = fs.readFileSync(path.join(directorio, "index.html"), "utf8");
+        const catalogo = cargar([fuente])[0];
+        const html = fs.readFileSync(path.join(directorio, catalogo.pagina ?? "index.html"), "utf8");
         const scripts = [...html.matchAll(/<script[^>]*src="([^"]+)"/g)]
             .map(coincidencia => path.resolve(directorio, ...coincidencia[1].split("/")));
         assert.ok(scripts.includes(fuente), fuente);
@@ -156,6 +187,44 @@ test("las páginas de origen cargan su catálogo y el visor compartido", () => {
         const estilos = [...html.matchAll(/<link[^>]*href="([^"]+)"/g)];
         estilos.forEach(([, href]) =>
             assert.ok(fs.existsSync(path.resolve(directorio, ...href.split("/"))), href));
+    }
+});
+
+test("los plásticos traseros mantienen las fichas existentes y agregan las fotos traseras", () => {
+    const fuente = path.join(raiz, "estante_accesorios", "estante_motor", "plasticos", "traseros.js");
+    assert.ok(fuentes.includes(fuente));
+    const catalogo = cargar([fuente])[0];
+    assert.equal(catalogo.estante, "Accesorios");
+    assert.equal(catalogo.categoria, "Plásticos traseros");
+    assert.equal(catalogo.pagina, "traseros.html");
+    assert.equal(catalogo.productos.length, 5);
+    for(const foto of fs.readdirSync(path.join(path.dirname(fuente), "img"))
+        .filter(nombre => /(?:^|[_-])tras(?:ero)?(?:[_\-.]|$)/i.test(nombre))){
+        const producto = catalogo.productos.find(p => p.foto === `img/${foto}`);
+        assert.ok(producto, foto);
+        assert.equal(producto.precio, "Consultar precio");
+    }
+    for(const producto of catalogo.productos){
+        const archivo = path.resolve(path.dirname(fuente), ...producto.foto.split("/"));
+        assert.ok(fs.existsSync(archivo), producto.foto);
+        assert.equal(producto.marca ?? producto.Marca ?? "", "");
+    }
+    const originales = catalogo.productos.slice(0, 2);
+    assert.ok(originales.every(p => p.precio === "$ 15.000-" &&
+        JSON.stringify(p.marcasAuto) === JSON.stringify(["Chevrolet"])));
+    assert.ok(catalogo.productos.some(p => p.aplicacion.includes("marcha atrás")));
+    assert.ok(catalogo.productos.some(p => p.aplicacion.includes("rojo")));
+});
+
+test("las páginas de plásticos enlazan entre sí y regresan al índice principal", () => {
+    const directorio = path.join(raiz, "estante_accesorios", "estante_motor", "plasticos");
+    for(const [pagina, otra] of [["index.html", "traseros.html"], ["traseros.html", "index.html"]]){
+        const html = fs.readFileSync(path.join(directorio, pagina), "utf8");
+        const enlaces = [...html.matchAll(/<a\s+href="([^"]+)"/g)]
+            .map(coincidencia => path.resolve(directorio, ...coincidencia[1].split("/")));
+        assert.ok(enlaces.includes(path.join(directorio, otra)));
+        assert.ok(enlaces.includes(path.join(raiz, "indice.html")));
+        enlaces.forEach(enlace => assert.ok(fs.existsSync(enlace), enlace));
     }
 });
 
