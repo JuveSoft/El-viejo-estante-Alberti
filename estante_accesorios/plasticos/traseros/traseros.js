@@ -1,8 +1,6 @@
 (window.catalogos = window.catalogos || []).push({
     base: new URL(".", document.currentScript.src).href,
 
-    pagina: "traseros.html",
-
     estante: "Accesorios",
 
     categoria: "Plásticos traseros",
